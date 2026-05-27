@@ -1,0 +1,87 @@
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+
+# IDE & Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.sublime-project
+*.sublime-workspace
+.atom/
+
+# OS
+Thumbs.db
+.DS_Store
+.AppleDouble
+.LSOverride
+*.log
+
+# Build & Distribution
+dist/
+build/
+.next/
+out/
+
+# Environment Variables
+.env
+.env.local
+.env.*.local
+
+# Testing
+.coverage/
+.nyc_output/
+coverage/
+
+# Temporary Files
+temp/
+tmp/
+*.tmp
+
+# Cache
+.cache/
+.eslintcache
+
+# Deployment
+netlify/
+vercel/
+.vercel/
+
+# Local development
+.serve/
+.local/
+
+# Uploads (if using backend)
+uploads/
+public/uploads/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# Secret files
+secrets/
+.secrets
+
+# Large files
+*.zip
+*.rar
+*.7z
+*.tar.gz
+
+# Common project files to ignore
+.venv/
+venv/
+env/
+*.pem
+*.key

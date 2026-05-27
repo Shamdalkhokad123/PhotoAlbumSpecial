@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: photo-album-pro
+    env: node
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+    plan: free
+    disk:
+      name: photo-album-data
+      mountPath: /var/data
+      sizeGB: 1

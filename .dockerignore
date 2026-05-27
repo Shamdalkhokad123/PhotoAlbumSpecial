@@ -1,0 +1,89 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Node
+node_modules
+npm-debug.log
+package-lock.json
+yarn.lock
+
+# IDE & Editors
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.sublime-project
+.sublime-workspace
+.atom
+
+# OS
+.DS_Store
+Thumbs.db
+.AppleDouble
+.LSOverride
+
+# Build & Dist
+dist
+build
+.next
+out
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Testing
+coverage
+.nyc_output
+.coverage
+
+# Deployment
+.netlify
+.vercel
+netlify
+vercel
+
+# Development
+.serve
+.local
+
+# Documentation
+*.md
+CHANGELOG.md
+LICENSE
+.docs
+
+# CI/CD
+.github
+.gitlab-ci.yml
+.circleci
+
+# Temporary
+temp
+tmp
+*.tmp
+*.bak
+*.backup
+*~
+
+# Large files
+*.zip
+*.rar
+*.7z
+*.tar.gz
+*.iso
+
+# Cache
+.cache
+.eslintcache
+.prettierignore
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*

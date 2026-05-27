@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  photo-album:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: photo-album-pro
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    volumes:
+      - .:/app
+      - /app/node_modules
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - photo-album-network
+
+  # Optional: Nginx reverse proxy
+  nginx:
+    image: nginx:alpine
+    container_name: photo-album-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./public:/usr/share/nginx/html:ro
+    depends_on:
+      - photo-album
+    restart: unless-stopped
+    networks:
+      - photo-album-network
+    profiles:
+      - nginx
+
+networks:
+  photo-album-network:
+    driver: bridge
+
+volumes:
+  node_modules:

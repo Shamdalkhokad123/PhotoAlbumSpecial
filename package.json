@@ -1,0 +1,28 @@
+{
+  "name": "photo-album-pro",
+  "version": "1.0.0",
+  "description": "A beautiful, feature-rich photo album web application with drag-and-drop, photo editing, and more.",
+  "main": "index.html",
+  "scripts": {
+    "start": "http-server -p 8000 -o",
+    "dev": "http-server -p 3000 -c-1",
+    "serve": "python -m http.server 8000"
+  },
+  "keywords": [
+    "photo",
+    "album",
+    "gallery",
+    "image-editor",
+    "web-app"
+  ],
+  "author": "PhotoAlbum Team",
+  "license": "MIT",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/photo-album-pro.git"
+  },
+  "homepage": "."
+}
