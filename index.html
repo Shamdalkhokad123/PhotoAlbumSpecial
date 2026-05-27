@@ -906,6 +906,8 @@
             to { opacity: 0; transform: translateX(100px); }
         }
     </style>
+    <!-- PDF Generation Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
 
@@ -1568,50 +1570,83 @@
 
     // ===================== DOWNLOAD =====================
     function downloadAlbum() {
+        if (!photos.length) {
+            showToast('📂 No photos to export!');
+            return;
+        }
+
+        showLoading();
         const albumTitle = document.getElementById('albumTitle').value || 'My Album';
-        const photosData = photos.map((p, i) => ({
-            number: i + 1,
-            caption: p.caption,
-            favorite: p.favorite,
-            date: p.uploadDate
-        }));
-
-        // Create a simple HTML page as download
-        const html = `
-<!DOCTYPE html><html><head>
-<meta charset="UTF-8">
-<title>${albumTitle}</title>
-<style>
-  body { font-family: Georgia, serif; background: #1a1a2e; color: white; margin: 0; padding: 20px; }
-  h1 { text-align: center; color: #f093fb; font-size: 36px; margin-bottom: 10px; }
-  .subtitle { text-align:center; color:rgba(255,255,255,0.5); margin-bottom:30px; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px,1fr)); gap: 20px; }
-  .card { border-radius: 12px; overflow: hidden; background: rgba(255,255,255,0.05); box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
-  .card img { width: 100%; height: 220px; object-fit: cover; display: block; }
-  .card .info { padding: 10px 12px; font-size: 13px; color: rgba(255,255,255,0.7); }
-  .caption { font-size: 15px; color: white; font-weight: bold; }
-</style></head><body>
-<h1>📸 ${albumTitle}</h1>
-<p class="subtitle">Total ${photos.length} photos • Saved on ${new Date().toLocaleDateString()}</p>
-<div class="grid">
-${photos.map((p,i) => `<div class="card">
-  <img src="${p.src}" alt="${p.caption}" style="${buildImgStyle(p)}">
-  <div class="info">
-    ${p.caption ? `<div class="caption">"${p.caption}"</div>` : ''}
-    <div>#${i+1} ${p.favorite ? '⭐' : ''} • ${p.uploadDate}</div>
-  </div>
-</div>`).join('')}
-</div>
-</body></html>`;
-
-        const blob = new Blob([html], { type: 'text/html' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${albumTitle.replace(/\s+/g,'_')}_album.html`;
-        a.click();
-        URL.revokeObjectURL(url);
-        showToast('💾 Album saved! Open the downloaded file in your browser.');
+        
+        // Create PDF element
+        const pdfContent = document.createElement('div');
+        pdfContent.style.cssText = 'background: white; padding: 20px; font-family: Georgia, serif;';
+        
+        // Title
+        const title = document.createElement('h1');
+        title.style.cssText = 'text-align: center; color: #f093fb; font-size: 28px; margin-bottom: 10px;';
+        title.textContent = '📸 ' + albumTitle;
+        pdfContent.appendChild(title);
+        
+        // Subtitle
+        const subtitle = document.createElement('p');
+        subtitle.style.cssText = 'text-align: center; color: #666; margin-bottom: 20px; font-size: 14px;';
+        subtitle.textContent = `Total ${photos.length} photos • Saved on ${new Date().toLocaleDateString()}`;
+        pdfContent.appendChild(subtitle);
+        
+        // Add each photo as a page
+        photos.forEach((photo, index) => {
+            // Image container
+            const imgContainer = document.createElement('div');
+            imgContainer.style.cssText = 'page-break-after: always; padding: 20px; border-bottom: 1px solid #ccc; display: flex; flex-direction: column; align-items: center;';
+            
+            // Image
+            const img = document.createElement('img');
+            img.src = photo.src;
+            img.style.cssText = 'max-width: 100%; max-height: 600px; object-fit: contain; margin-bottom: 15px; border-radius: 8px;';
+            imgContainer.appendChild(img);
+            
+            // Photo info
+            const info = document.createElement('div');
+            info.style.cssText = 'width: 100%; text-align: center; color: #333;';
+            
+            // Caption
+            if (photo.caption) {
+                const caption = document.createElement('p');
+                caption.style.cssText = 'font-size: 16px; font-weight: bold; margin: 8px 0;';
+                caption.textContent = `"${photo.caption}"`;
+                info.appendChild(caption);
+            }
+            
+            // Photo number and details
+            const details = document.createElement('p');
+            details.style.cssText = 'font-size: 12px; color: #999; margin: 8px 0;';
+            details.textContent = `#${index + 1} ${photo.favorite ? '⭐ Favorite' : ''} • ${photo.uploadDate}`;
+            info.appendChild(details);
+            
+            imgContainer.appendChild(info);
+            pdfContent.appendChild(imgContainer);
+        });
+        
+        // PDF options
+        const options = {
+            margin: 10,
+            filename: `${albumTitle.replace(/\s+/g,'_')}_album.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true, allowTaint: true },
+            jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' },
+            pagebreak: { mode: 'avoid-all', before: '.page-break' }
+        };
+        
+        // Generate PDF
+        html2pdf().set(options).from(pdfContent).save().then(() => {
+            hideLoading();
+            showToast('✅ PDF created! Download starting...');
+        }).catch(err => {
+            hideLoading();
+            showToast('❌ Error creating PDF. Try again.');
+            console.error('PDF Error:', err);
+        });
     }
 
     // ===================== HELPERS =====================
